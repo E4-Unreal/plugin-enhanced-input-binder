@@ -20,7 +20,8 @@ public class EnhancedInputBinder : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "EnhancedInput"
             }
         );
     }
