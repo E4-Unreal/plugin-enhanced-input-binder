@@ -21,4 +21,19 @@ struct ENHANCEDINPUTBINDER_API FInputActionData
 
     FORCEINLINE bool IsValid() const { return InputAction && TriggerEvent != ETriggerEvent::None; }
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
+
+    bool operator==(const FInputActionData& Other) const
+    {
+        return Equals(Other);
+    }
+
+    bool Equals(const FInputActionData& Other) const
+    {
+        return InputAction == Other.InputAction && TriggerEvent == Other.TriggerEvent;
+    }
+
+    friend uint32 GetTypeHash(const FInputActionData& EquipmentSlot)
+    {
+        return FCrc::MemCrc32(&EquipmentSlot, sizeof(FInputActionData));
+    }
 };
