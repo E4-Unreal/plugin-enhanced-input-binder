@@ -10,6 +10,7 @@ public class EnhancedInputBinder : ModuleRules
             new string[]
             {
                 "Core",
+                "UniversalUtilities"
             }
         );
 
