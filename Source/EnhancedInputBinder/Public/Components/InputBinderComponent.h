@@ -5,14 +5,14 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Types/InputMappingContextData.h"
-#include "EnhancedInputBinderComponent.generated.h"
+#include "InputBinderComponent.generated.h"
 
-class UEnhancedInputConfig;
+class UInputConfig;
 class UEnhancedInputComponent;
 class UEnhancedInputLocalPlayerSubsystem;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class ENHANCEDINPUTBINDER_API UEnhancedInputBinderComponent : public UActorComponent
+class ENHANCEDINPUTBINDER_API UInputBinderComponent : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -21,7 +21,7 @@ protected:
     TArray<FInputMappingContextData> InputMappingContextDataList;
 
     UPROPERTY(EditDefaultsOnly, Category = "Config")
-    TArray<TObjectPtr<UEnhancedInputConfig>> InputConfigs;
+    TArray<TObjectPtr<UInputConfig>> InputConfigs;
 
     UPROPERTY(VisibleInstanceOnly, Category = "State")
     TArray<uint32> InputBindingHandles;

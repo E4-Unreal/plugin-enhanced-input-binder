@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "EnhancedInputConfig.generated.h"
+#include "InputConfig.generated.h"
 
 /**
  * 입력 바인딩 전용 데이터 에셋
  */
 UCLASS(Abstract)
-class ENHANCEDINPUTBINDER_API UEnhancedInputConfig : public UPrimaryDataAsset
+class ENHANCEDINPUTBINDER_API UInputConfig : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 

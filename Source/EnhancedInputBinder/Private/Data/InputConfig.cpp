@@ -1,16 +1,16 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/EnhancedInputConfig.h"
+#include "Data/InputConfig.h"
 
 #include "EnhancedInputComponent.h"
 
-TArray<uint32> UEnhancedInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+TArray<uint32> UInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
     return EnhancedInputComponent != nullptr ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
 }
 
-APawn* UEnhancedInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent)
+APawn* UInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (EnhancedInputComponent)
     {
@@ -26,7 +26,7 @@ APawn* UEnhancedInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* Enhanc
     return nullptr;
 }
 
-APlayerController* UEnhancedInputConfig::GetOwningPlayer(UEnhancedInputComponent* EnhancedInputComponent)
+APlayerController* UInputConfig::GetOwningPlayer(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (APawn* OwningPawn = GetOwningPlayerPawn(EnhancedInputComponent))
     {

@@ -5,12 +5,12 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Data/EnhancedInputConfig.h"
+#include "Data/InputConfig.h"
 #include "Logging.h"
 
 #define LOG_OWNER_ERROR LOG_ACTOR_COMPONENT(Error, TEXT("Owner should be PlayerController or Pawn!"))
 
-APawn* UEnhancedInputBinderComponent::GetOwningPawn() const
+APawn* UInputBinderComponent::GetOwningPawn() const
 {
     if (IsPawn())
     {
@@ -30,7 +30,7 @@ APawn* UEnhancedInputBinderComponent::GetOwningPawn() const
     }
 }
 
-APlayerController* UEnhancedInputBinderComponent::GetOwningPlayer() const
+APlayerController* UInputBinderComponent::GetOwningPlayer() const
 {
     if (IsPawn())
     {
@@ -50,7 +50,7 @@ APlayerController* UEnhancedInputBinderComponent::GetOwningPlayer() const
     }
 }
 
-UEnhancedInputComponent* UEnhancedInputBinderComponent::GetEnhancedInputComponent() const
+UEnhancedInputComponent* UInputBinderComponent::GetEnhancedInputComponent() const
 {
     if (IsPawn())
     {
@@ -70,7 +70,7 @@ UEnhancedInputComponent* UEnhancedInputBinderComponent::GetEnhancedInputComponen
     }
 }
 
-UEnhancedInputLocalPlayerSubsystem* UEnhancedInputBinderComponent::GetEnhancedInputLocalPlayerSubsystem() const
+UEnhancedInputLocalPlayerSubsystem* UInputBinderComponent::GetEnhancedInputLocalPlayerSubsystem() const
 {
     if (APlayerController* PlayerController = GetOwningPlayer())
     {
@@ -80,21 +80,21 @@ UEnhancedInputLocalPlayerSubsystem* UEnhancedInputBinderComponent::GetEnhancedIn
     return nullptr;
 }
 
-void UEnhancedInputBinderComponent::BindEnhancedInput()
+void UInputBinderComponent::BindEnhancedInput()
 {
     BindInputConfigs();
 
     AddMappingContexts();
 }
 
-void UEnhancedInputBinderComponent::UnBindEnhancedInput()
+void UInputBinderComponent::UnBindEnhancedInput()
 {
     UnBindInputConfigs();
 
     RemoveMappingContexts();
 }
 
-void UEnhancedInputBinderComponent::BindInputConfigs()
+void UInputBinderComponent::BindInputConfigs()
 {
     if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
     {
@@ -108,7 +108,7 @@ void UEnhancedInputBinderComponent::BindInputConfigs()
     }
 }
 
-void UEnhancedInputBinderComponent::UnBindInputConfigs()
+void UInputBinderComponent::UnBindInputConfigs()
 {
     if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
     {
@@ -121,7 +121,7 @@ void UEnhancedInputBinderComponent::UnBindInputConfigs()
     }
 }
 
-void UEnhancedInputBinderComponent::AddMappingContexts()
+void UInputBinderComponent::AddMappingContexts()
 {
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem())
     {
@@ -135,7 +135,7 @@ void UEnhancedInputBinderComponent::AddMappingContexts()
     }
 }
 
-void UEnhancedInputBinderComponent::RemoveMappingContexts()
+void UInputBinderComponent::RemoveMappingContexts()
 {
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem())
     {
