@@ -18,4 +18,7 @@ struct ENHANCEDINPUTBINDER_API FInputActionData
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     ETriggerEvent TriggerEvent = ETriggerEvent::Triggered;
+
+    FORCEINLINE bool IsValid() const { return InputAction && TriggerEvent != ETriggerEvent::None; }
+    FORCEINLINE bool IsNotValid() const { return !IsValid(); }
 };

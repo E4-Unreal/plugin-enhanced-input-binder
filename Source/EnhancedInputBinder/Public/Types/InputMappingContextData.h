@@ -17,4 +17,7 @@ struct ENHANCEDINPUTBINDER_API FInputMappingContextData
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Priority;
+
+    FORCEINLINE bool IsValid() const { return InputMappingContext; }
+    FORCEINLINE bool IsNotValid() const { return !IsValid(); }
 };
