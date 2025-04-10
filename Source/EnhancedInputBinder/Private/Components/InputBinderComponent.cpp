@@ -10,6 +10,19 @@
 
 #define LOG_OWNER_ERROR LOG_ACTOR_COMPONENT(Error, TEXT("Owner should be PlayerController or Pawn!"))
 
+UInputBinderComponent::UInputBinderComponent(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    bWantsInitializeComponent = true;
+}
+
+void UInputBinderComponent::InitializeComponent()
+{
+    Super::InitializeComponent();
+
+    BindEnhancedInput();
+}
+
 APawn* UInputBinderComponent::GetOwningPawn() const
 {
     if (IsPawn())

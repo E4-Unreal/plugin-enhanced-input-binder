@@ -27,6 +27,9 @@ protected:
     TArray<uint32> InputBindingHandles;
 
 public:
+    UInputBinderComponent(const FObjectInitializer& ObjectInitializer);
+    virtual void InitializeComponent() override;
+
     UFUNCTION(BlueprintCallable)
     virtual void BindEnhancedInput();
 
