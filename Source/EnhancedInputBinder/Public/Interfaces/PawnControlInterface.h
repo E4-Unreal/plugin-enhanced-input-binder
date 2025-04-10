@@ -26,10 +26,10 @@ class ENHANCEDINPUTBINDER_API IPawnControlInterface
     // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void Move(FInputActionValue ActionValue);
-    virtual void Move_Implementation(FInputActionValue ActionValue);
+    void Move(const FInputActionValue& ActionValue);
+    virtual void Move_Implementation(const FInputActionValue& ActionValue);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void Look(FInputActionValue ActionValue);
-    virtual void Look_Implementation(FInputActionValue ActionValue);
+    void Look(const FInputActionValue& ActionValue);
+    virtual void Look_Implementation(const FInputActionValue& ActionValue);
 };
