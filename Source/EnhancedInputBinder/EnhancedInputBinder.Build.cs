@@ -10,7 +10,8 @@ public class EnhancedInputBinder : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "UniversalUtilities",
+                "UMG"
             }
         );
 
@@ -20,7 +21,8 @@ public class EnhancedInputBinder : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "EnhancedInput"
             }
         );
     }
