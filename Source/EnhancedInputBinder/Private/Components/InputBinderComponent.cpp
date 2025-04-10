@@ -10,6 +10,13 @@
 
 #define LOG_OWNER_ERROR LOG_ACTOR_COMPONENT(Error, TEXT("Owner should be PlayerController or Pawn!"))
 
+void UInputBinderComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    BindEnhancedInput();
+}
+
 APawn* UInputBinderComponent::GetOwningPawn() const
 {
     if (IsPawn())
@@ -82,42 +89,56 @@ UEnhancedInputLocalPlayerSubsystem* UInputBinderComponent::GetEnhancedInputLocal
 
 void UInputBinderComponent::BindEnhancedInput()
 {
+    if (IsBound()) return;
+    EnhancedInputComponent = GetEnhancedInputComponent();
+
     BindInputConfigs();
 
     AddMappingContexts();
+
+    bBound = true;
 }
 
 void UInputBinderComponent::UnBindEnhancedInput()
 {
+    if (!IsBound()) return;
+    EnhancedInputComponent = nullptr;
+
     UnBindInputConfigs();
 
     RemoveMappingContexts();
+
+    bBound = false;
 }
 
 void UInputBinderComponent::BindInputConfigs()
 {
-    if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
+    if (!EnhancedInputComponent) return;
+
+    // Bind InputConfig
+    for (const auto& InputConfig : InputConfigs)
     {
-        for (const auto& InputConfig : InputConfigs)
-        {
-            if(InputConfig)
-            {
-                InputBindingHandles.Append(InputConfig->BindEnhancedInput(EnhancedInputComponent));
-            }
-        }
+        // Add InputBinding Handles
+        InputBindingHandles.Append(InputConfig->BindEnhancedInput(EnhancedInputComponent));
     }
 }
 
 void UInputBinderComponent::UnBindInputConfigs()
 {
-    if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
-    {
-        for (const auto& InputBindingHandle : InputBindingHandles)
-        {
-            EnhancedInputComponent->RemoveActionBindingForHandle(InputBindingHandle);
-        }
+    if (!EnhancedInputComponent) return;
 
-        InputBindingHandles.Reset();
+    // Remove InputBinding For Handles
+    for (const auto& InputBindingHandle : InputBindingHandles)
+    {
+        EnhancedInputComponent->RemoveActionBindingForHandle(InputBindingHandle);
+    }
+
+    InputBindingHandles.Reset();
+
+    // UnBind InputConfig
+    for (const auto& InputConfig : InputConfigs)
+    {
+        InputConfig->UnBindEnhancedInput(EnhancedInputComponent);
     }
 }
 

@@ -17,16 +17,24 @@ class ENHANCEDINPUTBINDER_API UInputBinderComponent : public UActorComponent
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
+    UPROPERTY(EditAnywhere, Category = "Config")
     TArray<FInputMappingContextData> InputMappingContextDataList;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
+    UPROPERTY(EditAnywhere, Category = "Config")
     TArray<TObjectPtr<UInputConfig>> InputConfigs;
 
-    UPROPERTY(VisibleInstanceOnly, Category = "State")
+    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
+    TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
+
+    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
     TArray<uint32> InputBindingHandles;
 
+    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
+    bool bBound;
+
 public:
+    virtual void BeginPlay() override;
+
     UFUNCTION(BlueprintCallable)
     virtual void BindEnhancedInput();
 
@@ -51,6 +59,9 @@ protected:
 
     UFUNCTION(BlueprintPure)
     UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputLocalPlayerSubsystem() const;
+
+    UFUNCTION(BlueprintPure)
+    virtual FORCEINLINE bool IsBound() const { return EnhancedInputComponent != nullptr; }
 
     UFUNCTION(BlueprintCallable)
     virtual void BindInputConfigs();
