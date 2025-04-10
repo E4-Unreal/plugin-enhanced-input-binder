@@ -89,54 +89,56 @@ UEnhancedInputLocalPlayerSubsystem* UInputBinderComponent::GetEnhancedInputLocal
 
 void UInputBinderComponent::BindEnhancedInput()
 {
-    if (bBound) return;
-    bBound = true;
+    if (IsBound()) return;
+    EnhancedInputComponent = GetEnhancedInputComponent();
 
     BindInputConfigs();
 
     AddMappingContexts();
+
+    bBound = true;
 }
 
 void UInputBinderComponent::UnBindEnhancedInput()
 {
-    if (!bBound) return;
-    bBound = false;
+    if (!IsBound()) return;
+    EnhancedInputComponent = nullptr;
 
     UnBindInputConfigs();
 
     RemoveMappingContexts();
+
+    bBound = false;
 }
 
 void UInputBinderComponent::BindInputConfigs()
 {
-    if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
+    if (!EnhancedInputComponent) return;
+
+    // Bind InputConfig
+    for (const auto& InputConfig : InputConfigs)
     {
-        // Bind InputConfig
-        for (const auto& InputConfig : InputConfigs)
-        {
-            // Add InputBinding Handles
-            InputBindingHandles.Append(InputConfig->BindEnhancedInput(EnhancedInputComponent));
-        }
+        // Add InputBinding Handles
+        InputBindingHandles.Append(InputConfig->BindEnhancedInput(EnhancedInputComponent));
     }
 }
 
 void UInputBinderComponent::UnBindInputConfigs()
 {
-    if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
+    if (!EnhancedInputComponent) return;
+
+    // Remove InputBinding For Handles
+    for (const auto& InputBindingHandle : InputBindingHandles)
     {
-        // Remove InputBinding For Handles
-        for (const auto& InputBindingHandle : InputBindingHandles)
-        {
-            EnhancedInputComponent->RemoveActionBindingForHandle(InputBindingHandle);
-        }
+        EnhancedInputComponent->RemoveActionBindingForHandle(InputBindingHandle);
+    }
 
-        InputBindingHandles.Reset();
+    InputBindingHandles.Reset();
 
-        // UnBind InputConfig
-        for (const auto& InputConfig : InputConfigs)
-        {
-            InputConfig->UnBindEnhancedInput(EnhancedInputComponent);
-        }
+    // UnBind InputConfig
+    for (const auto& InputConfig : InputConfigs)
+    {
+        InputConfig->UnBindEnhancedInput(EnhancedInputComponent);
     }
 }
 

@@ -24,10 +24,13 @@ protected:
     TArray<TObjectPtr<UInputConfig>> InputConfigs;
 
     UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
-    bool bBound;
+    TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 
     UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
     TArray<uint32> InputBindingHandles;
+
+    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
+    bool bBound;
 
 public:
     virtual void BeginPlay() override;
@@ -56,6 +59,9 @@ protected:
 
     UFUNCTION(BlueprintPure)
     UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputLocalPlayerSubsystem() const;
+
+    UFUNCTION(BlueprintPure)
+    virtual FORCEINLINE bool IsBound() const { return EnhancedInputComponent != nullptr; }
 
     UFUNCTION(BlueprintCallable)
     virtual void BindInputConfigs();
