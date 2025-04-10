@@ -8,12 +8,12 @@
 
 
 // Add default functionality here for any IPawnControlInterface functions that are not pure virtual.
-void IPawnControlInterface::Move_Implementation(FInputActionValue ActionValue, float ElapsedTime, float TriggeredTime,  const UInputAction* SourceAction)
+void IPawnControlInterface::Move_Implementation(FInputActionValue ActionValue)
 {
     LOG_TODO_INTERFACE
 }
 
-void IPawnControlInterface::Look_Implementation(FInputActionValue ActionValue, float ElapsedTime, float TriggeredTime,  const UInputAction* SourceAction)
+void IPawnControlInterface::Look_Implementation(FInputActionValue ActionValue)
 {
     LOG_TODO_INTERFACE
 }
