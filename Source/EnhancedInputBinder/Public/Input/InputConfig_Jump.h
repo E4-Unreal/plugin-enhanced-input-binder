@@ -17,7 +17,7 @@ class ENHANCEDINPUTBINDER_API UInputConfig_Jump : public UInputConfig
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, Category = "Config")
     TObjectPtr<UInputAction> JumpAction;
 
 protected:

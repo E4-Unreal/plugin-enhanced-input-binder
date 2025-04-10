@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/InputConfig_Jump.h"
+#include "Input/InputConfig_Jump.h"
 
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"

@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/InputConfig.h"
+#include "Input/InputConfig.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
