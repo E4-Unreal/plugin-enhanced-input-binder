@@ -18,7 +18,7 @@ class ENHANCEDINPUTBINDER_API UInputConfig : public UPrimaryDataAsset
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
+    UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (DisplayPriority = 0))
     FInputMappingContextData InputMappingContextData;
 
 public:
