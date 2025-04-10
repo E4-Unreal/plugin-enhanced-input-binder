@@ -7,6 +7,8 @@
 #include "InputConfig_PawnControl.generated.h"
 
 class UInputAction;
+struct FInputActionValue;
+struct FEnhancedInputActionEventBinding;
 
 /**
  *
@@ -25,4 +27,10 @@ protected:
 
 protected:
     virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) override;
+
+    virtual bool BindMoveAction(UEnhancedInputComponent* EnhancedInputComponent, uint32& Handle);
+    virtual bool BindLookAction(UEnhancedInputComponent* EnhancedInputComponent, uint32& Handle);
+
+    virtual void Move(APawn* Pawn, const FInputActionValue& ActionValue);
+    virtual void Look(APawn* Pawn, const FInputActionValue& ActionValue);
 };
