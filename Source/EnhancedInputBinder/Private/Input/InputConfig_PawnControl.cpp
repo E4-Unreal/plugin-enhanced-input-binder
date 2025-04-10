@@ -17,7 +17,7 @@ TArray<uint32> UInputConfig_PawnControl::OnBindEnhancedInput(UEnhancedInputCompo
     FEnhancedInputActionEventBinding& MoveActionBinding = EnhancedInputComponent->BindActionValueLambda(
                 MoveAction,
                 ETriggerEvent::Triggered,
-                [&](const FInputActionValue& InputActionValue)
+                [=](const FInputActionValue& InputActionValue)
                 {
                     IPawnControlInterface::Execute_Move(OwningPawn, InputActionValue);
                 });
@@ -28,7 +28,7 @@ TArray<uint32> UInputConfig_PawnControl::OnBindEnhancedInput(UEnhancedInputCompo
     FEnhancedInputActionEventBinding& LookActionBinding = EnhancedInputComponent->BindActionValueLambda(
                 LookAction,
                 ETriggerEvent::Triggered,
-                [&](const FInputActionValue& InputActionValue)
+                [=](const FInputActionValue& InputActionValue)
                 {
                     IPawnControlInterface::Execute_Look(OwningPawn, InputActionValue);
                 });
