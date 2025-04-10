@@ -16,7 +16,7 @@ class ENHANCEDINPUTBINDER_API UInputConfig_ToggleWidget : public UInputConfig
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, Category = "Config")
     TMap<FInputActionData, TSubclassOf<UUserWidget>> InputActionMap;
 
 protected:
