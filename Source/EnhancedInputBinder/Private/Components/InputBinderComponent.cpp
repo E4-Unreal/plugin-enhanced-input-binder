@@ -10,15 +10,9 @@
 
 #define LOG_OWNER_ERROR LOG_ACTOR_COMPONENT(Error, TEXT("Owner should be PlayerController or Pawn!"))
 
-UInputBinderComponent::UInputBinderComponent(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
+void UInputBinderComponent::BeginPlay()
 {
-    bWantsInitializeComponent = true;
-}
-
-void UInputBinderComponent::InitializeComponent()
-{
-    Super::InitializeComponent();
+    Super::BeginPlay();
 
     BindEnhancedInput();
 }
@@ -95,6 +89,9 @@ UEnhancedInputLocalPlayerSubsystem* UInputBinderComponent::GetEnhancedInputLocal
 
 void UInputBinderComponent::BindEnhancedInput()
 {
+    if (bBound) return;
+    bBound = true;
+
     BindInputConfigs();
 
     AddMappingContexts();
@@ -102,6 +99,9 @@ void UInputBinderComponent::BindEnhancedInput()
 
 void UInputBinderComponent::UnBindEnhancedInput()
 {
+    if (!bBound) return;
+    bBound = false;
+
     UnBindInputConfigs();
 
     RemoveMappingContexts();

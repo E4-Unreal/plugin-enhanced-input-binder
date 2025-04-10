@@ -23,12 +23,14 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Config")
     TArray<TObjectPtr<UInputConfig>> InputConfigs;
 
-    UPROPERTY(VisibleInstanceOnly, Category = "State")
+    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
+    bool bBound;
+
+    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
     TArray<uint32> InputBindingHandles;
 
 public:
-    UInputBinderComponent(const FObjectInitializer& ObjectInitializer);
-    virtual void InitializeComponent() override;
+    virtual void BeginPlay() override;
 
     UFUNCTION(BlueprintCallable)
     virtual void BindEnhancedInput();
