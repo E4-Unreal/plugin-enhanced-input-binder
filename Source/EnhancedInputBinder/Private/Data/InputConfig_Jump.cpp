@@ -9,8 +9,7 @@
 TArray<uint32> UInputConfig_Jump::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
     TArray<uint32> InputBindingHandles;
-    auto PlayerController = GetOwningPlayer(EnhancedInputComponent);
-    auto PlayerCharacter = PlayerController->GetCharacter();
+    auto PlayerCharacter = GetOwningCharacter(EnhancedInputComponent);
     if (PlayerCharacter == nullptr) return InputBindingHandles;
 
     FEnhancedInputActionEventBinding& JumpBinding = EnhancedInputComponent->BindAction(

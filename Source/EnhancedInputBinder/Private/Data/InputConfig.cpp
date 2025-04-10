@@ -4,19 +4,20 @@
 #include "Data/InputConfig.h"
 
 #include "EnhancedInputComponent.h"
+#include "GameFramework/Character.h"
 
 TArray<uint32> UInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
     return EnhancedInputComponent != nullptr ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
 }
 
-APawn* UInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent)
+APawn* UInputConfig::GetOwningPawn(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (EnhancedInputComponent)
     {
-        if (AActor* OwningActor = EnhancedInputComponent->GetOwner())
+        if (auto OwningActor = EnhancedInputComponent->GetOwner())
         {
-            if (APawn* OwningPawn = Cast<APawn>(OwningActor))
+            if (auto OwningPawn = Cast<APawn>(OwningActor))
             {
                 return OwningPawn;
             }
@@ -26,9 +27,25 @@ APawn* UInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputC
     return nullptr;
 }
 
-APlayerController* UInputConfig::GetOwningPlayer(UEnhancedInputComponent* EnhancedInputComponent)
+ACharacter* UInputConfig::GetOwningCharacter(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    if (APawn* OwningPawn = GetOwningPlayerPawn(EnhancedInputComponent))
+    if (EnhancedInputComponent)
+    {
+        if (auto OwningActor = EnhancedInputComponent->GetOwner())
+        {
+            if (auto OwningCharacter = Cast<ACharacter>(OwningActor))
+            {
+                return OwningCharacter;
+            }
+        }
+    }
+
+        return nullptr;
+}
+
+APlayerController* UInputConfig::GetOwningPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
+{
+    if (auto OwningPawn = GetOwningPawn(EnhancedInputComponent))
     {
         return Cast<APlayerController>(OwningPawn->GetController());
     }

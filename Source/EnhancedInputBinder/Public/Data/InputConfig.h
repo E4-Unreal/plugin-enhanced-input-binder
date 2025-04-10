@@ -18,8 +18,9 @@ public:
     TArray<uint32> BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
 
 protected:
-    static APawn* GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent);
-    static APlayerController* GetOwningPlayer(UEnhancedInputComponent* EnhancedInputComponent);
+    static APawn* GetOwningPawn(UEnhancedInputComponent* EnhancedInputComponent);
+    static ACharacter* GetOwningCharacter(UEnhancedInputComponent* EnhancedInputComponent);
+    static APlayerController* GetOwningPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
 
     virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { return TArray<uint32>(); }
 };

@@ -9,7 +9,7 @@
 TArray<uint32> UInputConfig_ToggleWidget::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
     TArray<uint32> InputBindingHandles;
-    APlayerController* PlayerController = GetOwningPlayer(EnhancedInputComponent);
+    auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
     if (PlayerController == nullptr) return InputBindingHandles;
 
     for (const auto& [InputActionData, WidgetClass] : InputActionMap)
