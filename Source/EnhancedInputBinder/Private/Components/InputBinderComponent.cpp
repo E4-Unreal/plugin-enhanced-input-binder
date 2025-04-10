@@ -98,12 +98,11 @@ void UInputBinderComponent::BindInputConfigs()
 {
     if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
     {
+        // Bind InputConfig
         for (const auto& InputConfig : InputConfigs)
         {
-            if(InputConfig)
-            {
-                InputBindingHandles.Append(InputConfig->BindEnhancedInput(EnhancedInputComponent));
-            }
+            // Add InputBinding Handles
+            InputBindingHandles.Append(InputConfig->BindEnhancedInput(EnhancedInputComponent));
         }
     }
 }
@@ -112,12 +111,19 @@ void UInputBinderComponent::UnBindInputConfigs()
 {
     if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
     {
+        // Remove InputBinding For Handles
         for (const auto& InputBindingHandle : InputBindingHandles)
         {
             EnhancedInputComponent->RemoveActionBindingForHandle(InputBindingHandle);
         }
 
         InputBindingHandles.Reset();
+
+        // UnBind InputConfig
+        for (const auto& InputConfig : InputConfigs)
+        {
+            InputConfig->UnBindEnhancedInput(EnhancedInputComponent);
+        }
     }
 }
 

@@ -17,10 +17,10 @@ class ENHANCEDINPUTBINDER_API UInputBinderComponent : public UActorComponent
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
+    UPROPERTY(EditAnywhere, Category = "Config")
     TArray<FInputMappingContextData> InputMappingContextDataList;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
+    UPROPERTY(EditAnywhere, Category = "Config")
     TArray<TObjectPtr<UInputConfig>> InputConfigs;
 
     UPROPERTY(VisibleInstanceOnly, Category = "State")

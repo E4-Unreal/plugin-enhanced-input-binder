@@ -4,18 +4,28 @@
 #include "Data/InputConfig.h"
 
 #include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
 
 TArray<uint32> UInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
+    AddMappingContext(EnhancedInputComponent);
+
     return EnhancedInputComponent != nullptr ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
+}
+
+void UInputConfig::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+{
+    RemoveMappingContext(EnhancedInputComponent);
+
+    OnUnBindEnhancedInput(EnhancedInputComponent);
 }
 
 APawn* UInputConfig::GetOwningPawn(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (EnhancedInputComponent)
     {
-        if (auto OwningActor = EnhancedInputComponent->GetOwner())
+        if (AActor* OwningActor = EnhancedInputComponent->GetOwner())
         {
             if (auto OwningPawn = Cast<APawn>(OwningActor))
             {
@@ -31,7 +41,7 @@ ACharacter* UInputConfig::GetOwningCharacter(UEnhancedInputComponent* EnhancedIn
 {
     if (EnhancedInputComponent)
     {
-        if (auto OwningActor = EnhancedInputComponent->GetOwner())
+        if (AActor* OwningActor = EnhancedInputComponent->GetOwner())
         {
             if (auto OwningCharacter = Cast<ACharacter>(OwningActor))
             {
@@ -45,10 +55,50 @@ ACharacter* UInputConfig::GetOwningCharacter(UEnhancedInputComponent* EnhancedIn
 
 APlayerController* UInputConfig::GetOwningPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    if (auto OwningPawn = GetOwningPawn(EnhancedInputComponent))
+    if (APawn* OwningPawn = GetOwningPawn(EnhancedInputComponent))
     {
         return Cast<APlayerController>(OwningPawn->GetController());
     }
 
     return nullptr;
+}
+
+UEnhancedInputLocalPlayerSubsystem* UInputConfig::GetEnhancedInputLocalPlayerSubsystem(
+    UEnhancedInputComponent* EnhancedInputComponent)
+{
+    if (APlayerController* PlayerController = GetOwningPlayerController(EnhancedInputComponent))
+    {
+        return ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+    }
+
+    return nullptr;
+}
+
+void UInputConfig::OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+{
+}
+
+void UInputConfig::AddMappingContext(UEnhancedInputComponent* EnhancedInputComponent)
+{
+    if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem(EnhancedInputComponent))
+    {
+        auto InputMappingContext = InputMappingContextData.InputMappingContext;
+        auto Priority = InputMappingContextData.Priority;
+        if (!Subsystem->HasMappingContext(InputMappingContext))
+        {
+            Subsystem->AddMappingContext(InputMappingContext, Priority);
+        }
+    }
+}
+
+void UInputConfig::RemoveMappingContext(UEnhancedInputComponent* EnhancedInputComponent)
+{
+    if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem(EnhancedInputComponent))
+    {
+        auto InputMappingContext = InputMappingContextData.InputMappingContext;
+        if (Subsystem->HasMappingContext(InputMappingContext))
+        {
+            Subsystem->RemoveMappingContext(InputMappingContext);
+        }
+    }
 }
