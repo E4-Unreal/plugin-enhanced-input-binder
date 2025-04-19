@@ -6,13 +6,6 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
 
-UInputConfig_CharacterJump::UInputConfig_CharacterJump()
-{
-    TriggerEvents.Empty(2);
-    TriggerEvents.Emplace(ETriggerEvent::Started);
-    TriggerEvents.Emplace(ETriggerEvent::Completed);
-}
-
 void UInputConfig_CharacterJump::OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController,
     const FInputActionValue& InputActionValue)
 {
