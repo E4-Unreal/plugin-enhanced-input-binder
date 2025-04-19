@@ -6,24 +6,18 @@
 #include "InputConfig.h"
 #include "InputConfig_Jump.generated.h"
 
-class UInputAction;
-
 /**
  *
  */
-UCLASS(meta = (DisplayName = "InputConfig_Jump"))
+UCLASS()
 class ENHANCEDINPUTBINDER_API UInputConfig_Jump : public UInputConfig
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
-    TObjectPtr<UInputAction> JumpAction;
+public:
+    UInputConfig_Jump();
 
 protected:
-    virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) override;
-
-    virtual void Jump(ACharacter* Character);
-
-    virtual void StopJumping(ACharacter* Character);
+    virtual void OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue) override;
+    virtual void OnCompleted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue) override;
 };

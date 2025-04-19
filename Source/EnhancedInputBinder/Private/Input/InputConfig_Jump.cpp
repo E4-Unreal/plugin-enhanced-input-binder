@@ -6,45 +6,31 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
 
-TArray<uint32> UInputConfig_Jump::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+UInputConfig_Jump::UInputConfig_Jump()
 {
-    TArray<uint32> InputBindingHandles;
-    auto PlayerCharacter = GetOwningCharacter(EnhancedInputComponent);
-    if (PlayerCharacter == nullptr) return InputBindingHandles;
-
-    FEnhancedInputActionEventBinding& JumpBinding = EnhancedInputComponent->BindAction(
-                JumpAction,
-                ETriggerEvent::Started,
-                this,
-                &ThisClass::Jump,
-                PlayerCharacter
-                );
-
-    InputBindingHandles.Emplace(JumpBinding.GetHandle());
-
-    FEnhancedInputActionEventBinding& StopJumpBinding = EnhancedInputComponent->BindAction(
-               JumpAction,
-               ETriggerEvent::Started,
-               this,
-               &ThisClass::StopJumping,
-               PlayerCharacter
-               );
-
-    InputBindingHandles.Emplace(StopJumpBinding.GetHandle());
-
-    return InputBindingHandles;
+    TriggerEvents.Empty(2);
+    TriggerEvents.Emplace(ETriggerEvent::Started);
+    TriggerEvents.Emplace(ETriggerEvent::Completed);
 }
 
-void UInputConfig_Jump::Jump(ACharacter* Character)
+void UInputConfig_Jump::OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController,
+    const FInputActionValue& InputActionValue)
 {
-    if (Character == nullptr) return;
+    Super::OnStarted_Implementation(Pawn, PlayerController, InputActionValue);
 
-    Character->Jump();
+    if (auto Character = Cast<ACharacter>(Pawn))
+    {
+        Character->Jump();
+    }
 }
 
-void UInputConfig_Jump::StopJumping(ACharacter* Character)
+void UInputConfig_Jump::OnCompleted_Implementation(APawn* Pawn, APlayerController* PlayerController,
+    const FInputActionValue& InputActionValue)
 {
-    if (Character == nullptr) return;
+    Super::OnCompleted_Implementation(Pawn, PlayerController, InputActionValue);
 
-    Character->StopJumping();
+    if (auto Character = Cast<ACharacter>(Pawn))
+    {
+        Character->StopJumping();
+    }
 }
