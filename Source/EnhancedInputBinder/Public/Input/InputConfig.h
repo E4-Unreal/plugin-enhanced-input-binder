@@ -17,10 +17,6 @@ class ENHANCEDINPUTBINDER_API UInputConfig : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (DisplayPriority = 0))
-    FInputMappingContextData InputMappingContextData;
-
 public:
     TArray<uint32> BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
     void UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
@@ -33,7 +29,4 @@ protected:
 
     virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { return TArray<uint32>(); }
     virtual void OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
-
-    virtual void AddMappingContext(UEnhancedInputComponent* EnhancedInputComponent);
-    virtual void RemoveMappingContext(UEnhancedInputComponent* EnhancedInputComponent);
 };

@@ -9,15 +9,11 @@
 
 TArray<uint32> UInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    AddMappingContext(EnhancedInputComponent);
-
     return EnhancedInputComponent != nullptr ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
 }
 
 void UInputConfig::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    RemoveMappingContext(EnhancedInputComponent);
-
     OnUnBindEnhancedInput(EnhancedInputComponent);
 }
 
@@ -76,29 +72,4 @@ UEnhancedInputLocalPlayerSubsystem* UInputConfig::GetEnhancedInputLocalPlayerSub
 
 void UInputConfig::OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-}
-
-void UInputConfig::AddMappingContext(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem(EnhancedInputComponent))
-    {
-        auto InputMappingContext = InputMappingContextData.InputMappingContext;
-        auto Priority = InputMappingContextData.Priority;
-        if (!Subsystem->HasMappingContext(InputMappingContext))
-        {
-            Subsystem->AddMappingContext(InputMappingContext, Priority);
-        }
-    }
-}
-
-void UInputConfig::RemoveMappingContext(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem(EnhancedInputComponent))
-    {
-        auto InputMappingContext = InputMappingContextData.InputMappingContext;
-        if (Subsystem->HasMappingContext(InputMappingContext))
-        {
-            Subsystem->RemoveMappingContext(InputMappingContext);
-        }
-    }
 }
