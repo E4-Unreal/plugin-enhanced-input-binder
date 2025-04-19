@@ -25,6 +25,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
     TSet<ETriggerEvent> TriggerEvents;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+    bool bEnableLog;
+
 public:
     UInputConfig();
 

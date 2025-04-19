@@ -140,37 +140,52 @@ uint32 UInputConfig::BindCompletedEvent(UEnhancedInputComponent* EnhancedInputCo
 
 void UInputConfig::OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
-    AActor* Instigator = Pawn;
-    if (!Instigator) Instigator = PlayerController;
-    LOG(Log, TEXT("%s triggered by %s"), *InputAction->GetName(), *Instigator->GetName())
+    if (bEnableLog)
+    {
+        AActor* Instigator = Pawn;
+        if (!Instigator) Instigator = PlayerController;
+        LOG(Log, TEXT("%s triggered by %s"), *InputAction->GetName(), *Instigator->GetName())
+    }
 }
 
 void UInputConfig::OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
-    AActor* Instigator = Pawn;
-    if (!Instigator) Instigator = PlayerController;
-    LOG(Log, TEXT("%s started by %s"), *InputAction->GetName(), *Instigator->GetName())
+    if (bEnableLog)
+    {
+        AActor* Instigator = Pawn;
+        if (!Instigator) Instigator = PlayerController;
+        LOG(Log, TEXT("%s started by %s"), *InputAction->GetName(), *Instigator->GetName())
+    }
 }
 
 void UInputConfig::OnOngoing_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
-    AActor* Instigator = Pawn;
-    if (!Instigator) Instigator = PlayerController;
-    LOG(Log, TEXT("%s ongoing by %s"), *InputAction->GetName(), *Instigator->GetName())
+    if (bEnableLog)
+    {
+        AActor* Instigator = Pawn;
+        if (!Instigator) Instigator = PlayerController;
+        LOG(Log, TEXT("%s ongoing by %s"), *InputAction->GetName(), *Instigator->GetName())
+    }
 }
 
 void UInputConfig::OnCanceled_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
-    AActor* Instigator = Pawn;
-    if (!Instigator) Instigator = PlayerController;
-    LOG(Log, TEXT("%s canceled by %s"), *InputAction->GetName(), *Instigator->GetName())
+    if (bEnableLog)
+    {
+        AActor* Instigator = Pawn;
+        if (!Instigator) Instigator = PlayerController;
+        LOG(Log, TEXT("%s canceled by %s"), *InputAction->GetName(), *Instigator->GetName())
+    }
 }
 
 void UInputConfig::OnCompleted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
-    AActor* Instigator = Pawn;
-    if (!Instigator) Instigator = PlayerController;
-    LOG(Log, TEXT("%s completed by %s"), *InputAction->GetName(), *Instigator->GetName())
+    if (bEnableLog)
+    {
+        AActor* Instigator = Pawn;
+        if (!Instigator) Instigator = PlayerController;
+        LOG(Log, TEXT("%s completed by %s"), *InputAction->GetName(), *Instigator->GetName())
+    }
 }
 
 APawn* UInputConfig::GetOwningPawn(UEnhancedInputComponent* EnhancedInputComponent)
