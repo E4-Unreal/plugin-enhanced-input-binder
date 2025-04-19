@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "PawnControlInterface.generated.h"
+#include "PawnMoveInterface.generated.h"
 
 struct FInputActionValue;
-class UInputAction;
 
 // This class does not need to be modified.
-UINTERFACE(Blueprintable)
-class ENHANCEDINPUTBINDER_API UPawnControlInterface : public UInterface
+UINTERFACE(MinimalAPI)
+class UPawnMoveInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -19,7 +18,7 @@ class ENHANCEDINPUTBINDER_API UPawnControlInterface : public UInterface
 /**
  *
  */
-class ENHANCEDINPUTBINDER_API IPawnControlInterface
+class ENHANCEDINPUTBINDER_API IPawnMoveInterface
 {
     GENERATED_BODY()
 
@@ -28,8 +27,4 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Move(const FInputActionValue& ActionValue);
     virtual void Move_Implementation(const FInputActionValue& ActionValue);
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void Look(const FInputActionValue& ActionValue);
-    virtual void Look_Implementation(const FInputActionValue& ActionValue);
 };
