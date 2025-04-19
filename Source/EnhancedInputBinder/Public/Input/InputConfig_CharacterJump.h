@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "InputConfig.h"
-#include "InputConfig_Jump.generated.h"
+#include "InputConfig_CharacterJump.generated.h"
 
 /**
  *
  */
 UCLASS()
-class ENHANCEDINPUTBINDER_API UInputConfig_Jump : public UInputConfig
+class ENHANCEDINPUTBINDER_API UInputConfig_CharacterJump : public UInputConfig
 {
     GENERATED_BODY()
 
 public:
-    UInputConfig_Jump();
+    UInputConfig_CharacterJump();
 
 protected:
     virtual void OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue) override;
