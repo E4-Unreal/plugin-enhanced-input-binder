@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Types/InputMappingContextData.h"
 #include "InputBinderComponent.generated.h"
 
+class UInputMappingContext;
 class UInputConfig;
 class UEnhancedInputComponent;
 class UEnhancedInputLocalPlayerSubsystem;
@@ -17,19 +17,22 @@ class ENHANCEDINPUTBINDER_API UInputBinderComponent : public UActorComponent
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, Category = "Config")
-    TArray<FInputMappingContextData> InputMappingContextDataList;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    int32 Priority;
 
-    UPROPERTY(EditAnywhere, Category = "Config")
-    TArray<TObjectPtr<UInputConfig>> InputConfigs;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    TSet<TObjectPtr<UInputMappingContext>> InputMappingContexts;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    TSet<TObjectPtr<UInputConfig>> InputConfigs;
 
     UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
     TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 
-    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
+    UPROPERTY(VisibleAnywhere, Transient, Category = "State")
     TArray<uint32> InputBindingHandles;
 
-    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
     bool bBound;
 
 public:

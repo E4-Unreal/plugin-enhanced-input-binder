@@ -146,7 +146,7 @@ void UInputBinderComponent::AddMappingContexts()
 {
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem())
     {
-        for (const auto& [InputMappingContext, Priority] : InputMappingContextDataList)
+        for (const auto& InputMappingContext : InputMappingContexts)
         {
             if (!Subsystem->HasMappingContext(InputMappingContext))
             {
@@ -160,7 +160,7 @@ void UInputBinderComponent::RemoveMappingContexts()
 {
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem())
     {
-        for (const auto& [InputMappingContext, Priority] : InputMappingContextDataList)
+        for (const auto& InputMappingContext : InputMappingContexts)
         {
             if (Subsystem->HasMappingContext(InputMappingContext))
             {
