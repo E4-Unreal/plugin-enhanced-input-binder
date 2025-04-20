@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Types/InputMappingContextData.h"
 #include "InputBinderComponent.generated.h"
 
+class UInputMappingContext;
 class UInputConfig;
 class UEnhancedInputComponent;
 class UEnhancedInputLocalPlayerSubsystem;
@@ -16,62 +16,47 @@ class ENHANCEDINPUTBINDER_API UInputBinderComponent : public UActorComponent
 {
     GENERATED_BODY()
 
+    TWeakObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
+
 protected:
-    UPROPERTY(EditAnywhere, Category = "Config")
-    TArray<FInputMappingContextData> InputMappingContextDataList;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    int32 Priority;
 
-    UPROPERTY(EditAnywhere, Category = "Config")
-    TArray<TObjectPtr<UInputConfig>> InputConfigs;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    TSet<TObjectPtr<UInputMappingContext>> InputMappingContexts;
 
-    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
-    TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    TSet<TObjectPtr<UInputConfig>> InputConfigs;
 
-    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
+    UPROPERTY(VisibleAnywhere, Transient, Category = "State")
     TArray<uint32> InputBindingHandles;
 
-    UPROPERTY(VisibleInstanceOnly, Transient, Category = "State")
-    bool bBound;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
+    bool bBound = false;
 
 public:
     virtual void BeginPlay() override;
-
-    UFUNCTION(BlueprintCallable)
+    
     virtual void BindEnhancedInput();
-
-    UFUNCTION(BlueprintCallable)
     virtual void UnBindEnhancedInput();
 
+    void SetEnhancedInputComponent(UEnhancedInputComponent* NewEnhancedInputComponent);
+
 protected:
-    UFUNCTION(BlueprintPure)
-    FORCEINLINE bool IsPawn() const { return GetOwner()->GetClass()->IsChildOf(APawn::StaticClass()); }
+    virtual void FindEnhancedInputComponent();
 
-    UFUNCTION(BlueprintPure)
-    FORCEINLINE bool IsPlayerController() const { return GetOwner()->GetClass()->IsChildOf(APlayerController::StaticClass()); }
+    virtual void AddMappingContexts();
+    virtual void RemoveMappingContexts();
 
-    UFUNCTION(BlueprintPure)
-    APawn* GetOwningPawn() const;
-
-    UFUNCTION(BlueprintPure)
-    APlayerController* GetOwningPlayer() const;
-
-    UFUNCTION(BlueprintPure)
-    UEnhancedInputComponent* GetEnhancedInputComponent() const;
-
-    UFUNCTION(BlueprintPure)
-    UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputLocalPlayerSubsystem() const;
-
-    UFUNCTION(BlueprintPure)
-    virtual FORCEINLINE bool IsBound() const { return EnhancedInputComponent != nullptr; }
-
-    UFUNCTION(BlueprintCallable)
     virtual void BindInputConfigs();
-
-    UFUNCTION(BlueprintCallable)
     virtual void UnBindInputConfigs();
 
-    UFUNCTION(BlueprintCallable)
-    virtual void AddMappingContexts();
+    FORCEINLINE UEnhancedInputComponent* GetEnhancedInputComponent() const { return EnhancedInputComponent.Get(); }
 
-    UFUNCTION(BlueprintCallable)
-    virtual void RemoveMappingContexts();
+    APawn* GetOwningPawn() const;
+    APlayerController* GetOwningPlayerController() const;
+    UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputLocalPlayerSubsystem() const;
+
+    UFUNCTION()
+    virtual void OnOwningPawnRestarted(APawn* OwningPawn);
 };

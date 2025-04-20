@@ -5,140 +5,67 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
 #include "Input/InputConfig.h"
 #include "Logging.h"
-
-#define LOG_OWNER_ERROR LOG_ACTOR_COMPONENT(Error, TEXT("Owner should be PlayerController or Pawn!"))
 
 void UInputBinderComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    BindEnhancedInput();
-}
-
-APawn* UInputBinderComponent::GetOwningPawn() const
-{
-    if (IsPawn())
-    {
-        APawn* OwningPawn = Cast<APawn>(GetOwner());
-        return OwningPawn;
-    }
-    else if (IsPlayerController())
-    {
-        APlayerController* OwningPlayer = Cast<APlayerController>(GetOwner());
-        return OwningPlayer->GetPawn();
-    }
-    else
-    {
-        LOG_OWNER_ERROR
-
-        return nullptr;
-    }
-}
-
-APlayerController* UInputBinderComponent::GetOwningPlayer() const
-{
-    if (IsPawn())
-    {
-        APawn* OwningPawn = Cast<APawn>(GetOwner());
-        return Cast<APlayerController>(OwningPawn->GetController());
-    }
-    else if (IsPlayerController())
-    {
-        APlayerController* OwningPlayer = Cast<APlayerController>(GetOwner());
-        return OwningPlayer;
-    }
-    else
-    {
-        LOG_OWNER_ERROR
-
-        return nullptr;
-    }
-}
-
-UEnhancedInputComponent* UInputBinderComponent::GetEnhancedInputComponent() const
-{
-    if (IsPawn())
-    {
-        APawn* OwningPawn = Cast<APawn>(GetOwner());
-        return Cast<UEnhancedInputComponent>(OwningPawn->InputComponent);
-    }
-    else if (IsPlayerController())
-    {
-        APlayerController* OwningPlayer = Cast<APlayerController>(GetOwner());
-        return Cast<UEnhancedInputComponent>(OwningPlayer->InputComponent);
-    }
-    else
-    {
-        LOG_OWNER_ERROR
-
-        return nullptr;
-    }
-}
-
-UEnhancedInputLocalPlayerSubsystem* UInputBinderComponent::GetEnhancedInputLocalPlayerSubsystem() const
-{
-    if (APlayerController* PlayerController = GetOwningPlayer())
-    {
-        return ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-    }
-
-    return nullptr;
+    FindEnhancedInputComponent();
 }
 
 void UInputBinderComponent::BindEnhancedInput()
 {
-    if (IsBound()) return;
-    EnhancedInputComponent = GetEnhancedInputComponent();
-
-    BindInputConfigs();
+    if (bool bCanBind = !bBound && GetEnhancedInputComponent(); !bCanBind) return;
+    bBound = true;
 
     AddMappingContexts();
-
-    bBound = true;
+    BindInputConfigs();
 }
 
 void UInputBinderComponent::UnBindEnhancedInput()
 {
-    if (!IsBound()) return;
-    EnhancedInputComponent = nullptr;
-
-    UnBindInputConfigs();
-
-    RemoveMappingContexts();
-
+    if (!bBound) return;
     bBound = false;
-}
 
-void UInputBinderComponent::BindInputConfigs()
-{
-    if (!EnhancedInputComponent) return;
-
-    // Bind InputConfig
-    for (const auto& InputConfig : InputConfigs)
+    if (GetEnhancedInputComponent())
     {
-        // Add InputBinding Handles
-        InputBindingHandles.Append(InputConfig->BindEnhancedInput(EnhancedInputComponent));
+        UnBindInputConfigs();
+        RemoveMappingContexts();
+    }
+    else
+    {
+        InputBindingHandles.Reset();
     }
 }
 
-void UInputBinderComponent::UnBindInputConfigs()
+void UInputBinderComponent::SetEnhancedInputComponent(UEnhancedInputComponent* NewEnhancedInputComponent)
 {
-    if (!EnhancedInputComponent) return;
+    if (EnhancedInputComponent == NewEnhancedInputComponent) return;
 
-    // Remove InputBinding For Handles
-    for (const auto& InputBindingHandle : InputBindingHandles)
+    UnBindEnhancedInput();
+    EnhancedInputComponent = NewEnhancedInputComponent;
+    BindEnhancedInput();
+}
+
+void UInputBinderComponent::FindEnhancedInputComponent()
+{
+    if (GetEnhancedInputComponent()) return;
+
+    if (APawn* OwningPawn = GetOwningPawn())
     {
-        EnhancedInputComponent->RemoveActionBindingForHandle(InputBindingHandle);
+        OnOwningPawnRestarted(OwningPawn);
+        OwningPawn->ReceiveRestartedDelegate.AddDynamic(this, &ThisClass::OnOwningPawnRestarted);
     }
-
-    InputBindingHandles.Reset();
-
-    // UnBind InputConfig
-    for (const auto& InputConfig : InputConfigs)
+    else if (APlayerController* OwningPlayerController = GetOwningPlayerController())
     {
-        InputConfig->UnBindEnhancedInput(EnhancedInputComponent);
+        SetEnhancedInputComponent(Cast<UEnhancedInputComponent>(OwningPlayerController->InputComponent));
+    }
+    else
+    {
+        checkf(false, TEXT("%s::%s's owner must be Pawn or PlayerController!"), *GetOwner()->GetName(), *GetName());
     }
 }
 
@@ -146,10 +73,11 @@ void UInputBinderComponent::AddMappingContexts()
 {
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem())
     {
-        for (const auto& [InputMappingContext, Priority] : InputMappingContextDataList)
+        for (const auto& InputMappingContext : InputMappingContexts)
         {
             if (!Subsystem->HasMappingContext(InputMappingContext))
             {
+                LOG_ACTOR_COMPONENT(Log, TEXT("Add MappingContext: %s"), *InputMappingContext->GetName())
                 Subsystem->AddMappingContext(InputMappingContext, Priority);
             }
         }
@@ -160,12 +88,81 @@ void UInputBinderComponent::RemoveMappingContexts()
 {
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem())
     {
-        for (const auto& [InputMappingContext, Priority] : InputMappingContextDataList)
+        for (const auto& InputMappingContext : InputMappingContexts)
         {
             if (Subsystem->HasMappingContext(InputMappingContext))
             {
+                LOG_ACTOR_COMPONENT(Log, TEXT("Remove MappingContext: %s"), *InputMappingContext->GetName())
                 Subsystem->RemoveMappingContext(InputMappingContext);
             }
         }
     }
+}
+
+void UInputBinderComponent::BindInputConfigs()
+{
+    // Bind InputConfig
+    for (const auto& InputConfig : InputConfigs)
+    {
+        // Add InputBinding Handles
+        LOG_ACTOR_COMPONENT(Log, TEXT("Bind InputConfig: %s"), *InputConfig->GetName())
+        InputBindingHandles.Append(InputConfig->BindEnhancedInput(GetEnhancedInputComponent()));
+    }
+}
+
+void UInputBinderComponent::UnBindInputConfigs()
+{
+    // Remove InputBinding For Handles
+    for (const auto& InputBindingHandle : InputBindingHandles)
+    {
+        GetEnhancedInputComponent()->RemoveActionBindingForHandle(InputBindingHandle);
+    }
+
+    InputBindingHandles.Reset();
+
+    // UnBind InputConfig
+    for (const auto& InputConfig : InputConfigs)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("UnBind InputConfig: %s"), *InputConfig->GetName())
+        InputConfig->UnBindEnhancedInput(GetEnhancedInputComponent());
+    }
+}
+
+APawn* UInputBinderComponent::GetOwningPawn() const
+{
+    auto OwningPawn = Cast<APawn>(GetOwner());
+    if (!OwningPawn)
+    {
+        if (auto OwningPlayerController = Cast<APlayerController>(GetOwner()))
+        {
+            OwningPawn = OwningPlayerController->GetPawn();
+        }
+    }
+
+    return OwningPawn;
+}
+
+APlayerController* UInputBinderComponent::GetOwningPlayerController() const
+{
+    auto OwningPlayerController = Cast<APlayerController>(GetOwner());
+    if (!OwningPlayerController)
+    {
+        if (auto OwningPawn = Cast<APawn>(GetOwner()))
+        {
+            OwningPlayerController = Cast<APlayerController>(OwningPawn->Controller);
+        }
+    }
+
+    return OwningPlayerController;
+}
+
+UEnhancedInputLocalPlayerSubsystem* UInputBinderComponent::GetEnhancedInputLocalPlayerSubsystem() const
+{
+    APlayerController* PlayerController = GetOwningPlayerController();
+    return PlayerController ? ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()) : nullptr;
+}
+
+void UInputBinderComponent::OnOwningPawnRestarted(APawn* OwningPawn)
+{
+    SetEnhancedInputComponent(Cast<UEnhancedInputComponent>(OwningPawn->InputComponent));
 }
