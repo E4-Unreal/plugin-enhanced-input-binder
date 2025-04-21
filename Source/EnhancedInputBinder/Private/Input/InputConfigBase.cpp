@@ -3,6 +3,7 @@
 
 #include "Input/InputConfigBase.h"
 
+#include "EnhancedInputBinderFunctionLibrary.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Logging.h"
@@ -117,19 +118,22 @@ void UInputConfigBase::OnCompleted_Implementation(UEnhancedInputComponent* Enhan
 
 APlayerController* UInputConfigBase::GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    APlayerController* OwningPlayerController = Cast<APlayerController>(EnhancedInputComponent->GetOwner());
-    if (!OwningPlayerController) OwningPlayerController = Cast<APlayerController>(Cast<APawn>(EnhancedInputComponent->GetOwner())->GetController());
+    if (!EnhancedInputComponent) return nullptr;
 
-    return OwningPlayerController;
+    return UEnhancedInputBinderFunctionLibrary::GetPlayerController(EnhancedInputComponent->GetOwner());
 }
 
 APawn* UInputConfigBase::GetPawn(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    return GetPlayerController(EnhancedInputComponent)->GetPawn();
+    if (!EnhancedInputComponent) return nullptr;
+
+    return UEnhancedInputBinderFunctionLibrary::GetPawn(EnhancedInputComponent->GetOwner());
 }
 
 UEnhancedInputLocalPlayerSubsystem* UInputConfigBase::GetEnhancedInputLocalPlayerSubsystem(
     UEnhancedInputComponent* EnhancedInputComponent)
 {
-    return ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetPlayerController(EnhancedInputComponent)->GetLocalPlayer());
+    if (!EnhancedInputComponent) return nullptr;
+
+    return UEnhancedInputBinderFunctionLibrary::GetEnhancedInputLocalPlayerSubsystem(EnhancedInputComponent->GetOwner());
 }
