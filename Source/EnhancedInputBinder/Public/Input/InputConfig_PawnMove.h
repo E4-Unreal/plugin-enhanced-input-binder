@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputConfigBase.h"
+#include "InputConfig.h"
 #include "InputConfig_PawnMove.generated.h"
 
 /**
  *
  */
 UCLASS()
-class ENHANCEDINPUTBINDER_API UInputConfig_PawnMove : public UInputConfigBase
+class ENHANCEDINPUTBINDER_API UInputConfig_PawnMove : public UInputConfig
 {
     GENERATED_BODY()
 
 protected:
-    virtual void OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue) override;
+    virtual void OnTriggered_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance) override;
 
     virtual void Move(APawn* Pawn, const FInputActionValue& ActionValue);
 };

@@ -3,22 +3,24 @@
 
 #include "Input/InputConfig_PawnMove.h"
 
+#include "InputAction.h"
 #include "Interfaces/PawnMoveInterface.h"
 
-void UInputConfig_PawnMove::OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController,
-    const FInputActionValue& InputActionValue)
+void UInputConfig_PawnMove::OnTriggered_Implementation(UEnhancedInputComponent* EnhancedInputComponent,
+    const FInputActionInstance& InputActionInstance)
 {
-    Super::OnTriggered_Implementation(Pawn, PlayerController, InputActionValue);
+    Super::OnTriggered_Implementation(EnhancedInputComponent, InputActionInstance);
 
+    auto Pawn = GetPawn(EnhancedInputComponent);
     if (!Pawn) return;
 
     if (Pawn->Implements<UPawnMoveInterface>())
     {
-        IPawnMoveInterface::Execute_Move(Pawn, InputActionValue);
+        IPawnMoveInterface::Execute_Move(Pawn, InputActionInstance.GetValue());
     }
     else
     {
-        Move(Pawn, InputActionValue);
+        Move(Pawn, InputActionInstance.GetValue());
     }
 }
 

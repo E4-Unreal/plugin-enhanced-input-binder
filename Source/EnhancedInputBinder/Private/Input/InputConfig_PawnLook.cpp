@@ -3,22 +3,24 @@
 
 #include "Input/InputConfig_PawnLook.h"
 
+#include "InputAction.h"
 #include "Interfaces/PawnLookInterface.h"
 
-void UInputConfig_PawnLook::OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController,
-                                                       const FInputActionValue& InputActionValue)
+void UInputConfig_PawnLook::OnTriggered_Implementation(UEnhancedInputComponent* EnhancedInputComponent,
+    const FInputActionInstance& InputActionInstance)
 {
-    Super::OnTriggered_Implementation(Pawn, PlayerController, InputActionValue);
+    Super::OnTriggered_Implementation(EnhancedInputComponent, InputActionInstance);
 
+    auto Pawn = GetPawn(EnhancedInputComponent);
     if (!Pawn) return;
 
     if (Pawn->Implements<UPawnLookInterface>())
     {
-        IPawnLookInterface::Execute_Look(Pawn, InputActionValue);
+        IPawnLookInterface::Execute_Look(Pawn, InputActionInstance.GetValue());
     }
     else
     {
-        Look(Pawn, InputActionValue);
+        Look(Pawn, InputActionInstance.GetValue());
     }
 }
 

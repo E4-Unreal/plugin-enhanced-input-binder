@@ -3,26 +3,25 @@
 
 #include "Input/InputConfig_CharacterJump.h"
 
-#include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
 
-void UInputConfig_CharacterJump::OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController,
-    const FInputActionValue& InputActionValue)
+void UInputConfig_CharacterJump::OnStarted_Implementation(UEnhancedInputComponent* EnhancedInputComponent,
+    const FInputActionInstance& InputActionInstance)
 {
-    Super::OnStarted_Implementation(Pawn, PlayerController, InputActionValue);
+    Super::OnStarted_Implementation(EnhancedInputComponent, InputActionInstance);
 
-    if (auto Character = Cast<ACharacter>(Pawn))
+    if (auto Character = Cast<ACharacter>(GetPawn(EnhancedInputComponent)))
     {
         Character->Jump();
     }
 }
 
-void UInputConfig_CharacterJump::OnCompleted_Implementation(APawn* Pawn, APlayerController* PlayerController,
-    const FInputActionValue& InputActionValue)
+void UInputConfig_CharacterJump::OnCompleted_Implementation(UEnhancedInputComponent* EnhancedInputComponent,
+    const FInputActionInstance& InputActionInstance)
 {
-    Super::OnCompleted_Implementation(Pawn, PlayerController, InputActionValue);
+    Super::OnCompleted_Implementation(EnhancedInputComponent, InputActionInstance);
 
-    if (auto Character = Cast<ACharacter>(Pawn))
+    if (auto Character = Cast<ACharacter>(GetPawn(EnhancedInputComponent)))
     {
         Character->StopJumping();
     }

@@ -14,12 +14,12 @@ UInputConfigBase::UInputConfigBase()
 
 TArray<uint32> UInputConfigBase::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    return EnhancedInputComponent && InputAction ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
+    return EnhancedInputComponent && IsValid() ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
 }
 
 void UInputConfigBase::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    if (EnhancedInputComponent && InputAction) OnUnBindEnhancedInput(EnhancedInputComponent);
+    if (EnhancedInputComponent && IsValid()) OnUnBindEnhancedInput(EnhancedInputComponent);
 }
 
 TArray<uint32> UInputConfigBase::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
@@ -33,19 +33,19 @@ TArray<uint32> UInputConfigBase::OnBindEnhancedInput(UEnhancedInputComponent* En
         case ETriggerEvent::None:
             break;
         case ETriggerEvent::Triggered:
-            InputBindingHandles.Emplace(BindTriggeredEvent(EnhancedInputComponent));
+            BindInputActions(EnhancedInputComponent, TriggerEvent, FInputActionDelegate::CreateUObject(this, &ThisClass::OnTriggered), InputBindingHandles);
             break;
         case ETriggerEvent::Started:
-            InputBindingHandles.Emplace(BindStartedEvent(EnhancedInputComponent));
+            BindInputActions(EnhancedInputComponent, TriggerEvent, FInputActionDelegate::CreateUObject(this, &ThisClass::OnStarted), InputBindingHandles);
             break;
         case ETriggerEvent::Ongoing:
-            InputBindingHandles.Emplace(BindOngoingEvent(EnhancedInputComponent));
+            BindInputActions(EnhancedInputComponent, TriggerEvent, FInputActionDelegate::CreateUObject(this, &ThisClass::OnOngoing), InputBindingHandles);
             break;
         case ETriggerEvent::Canceled:
-            InputBindingHandles.Emplace(BindCanceledEvent(EnhancedInputComponent));
+            BindInputActions(EnhancedInputComponent, TriggerEvent, FInputActionDelegate::CreateUObject(this, &ThisClass::OnCanceled), InputBindingHandles);
             break;
         case ETriggerEvent::Completed:
-            InputBindingHandles.Emplace(BindCompletedEvent(EnhancedInputComponent));
+            BindInputActions(EnhancedInputComponent, TriggerEvent, FInputActionDelegate::CreateUObject(this, &ThisClass::OnCompleted), InputBindingHandles);
             break;
         }
     }
@@ -58,153 +58,60 @@ void UInputConfigBase::OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedIn
 
 }
 
-uint32 UInputConfigBase::BindTriggeredEvent(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    auto Pawn = GetPawn(EnhancedInputComponent);
-    auto PlayerController = GetPlayerController(EnhancedInputComponent);
-
-    FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
-        InputAction,
-        ETriggerEvent::Triggered,
-        [Pawn, PlayerController, this](const FInputActionValue& InputActionValue)
-        {
-            OnTriggered(Pawn, PlayerController, InputActionValue);
-        });
-
-    return InputActionBinding.GetHandle();
-}
-
-uint32 UInputConfigBase::BindStartedEvent(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    auto Pawn = GetPawn(EnhancedInputComponent);
-    auto PlayerController = GetPlayerController(EnhancedInputComponent);
-
-    FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
-        InputAction,
-        ETriggerEvent::Started,
-        [Pawn, PlayerController, this](const FInputActionValue& InputActionValue)
-        {
-            OnStarted(Pawn, PlayerController, InputActionValue);
-        });
-
-    return InputActionBinding.GetHandle();
-}
-
-uint32 UInputConfigBase::BindOngoingEvent(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    auto Pawn = GetPawn(EnhancedInputComponent);
-    auto PlayerController = GetPlayerController(EnhancedInputComponent);
-
-    FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
-        InputAction,
-        ETriggerEvent::Ongoing,
-        [Pawn, PlayerController, this](const FInputActionValue& InputActionValue)
-        {
-            OnOngoing(Pawn, PlayerController, InputActionValue);
-        });
-
-    return InputActionBinding.GetHandle();
-}
-
-uint32 UInputConfigBase::BindCanceledEvent(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    auto Pawn = GetPawn(EnhancedInputComponent);
-    auto PlayerController = GetPlayerController(EnhancedInputComponent);
-
-    FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
-        InputAction,
-        ETriggerEvent::Canceled,
-        [Pawn, PlayerController, this](const FInputActionValue& InputActionValue)
-        {
-            OnCanceled(Pawn, PlayerController, InputActionValue);
-        });
-
-    return InputActionBinding.GetHandle();
-}
-
-uint32 UInputConfigBase::BindCompletedEvent(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    auto Pawn = GetPawn(EnhancedInputComponent);
-    auto PlayerController = GetPlayerController(EnhancedInputComponent);
-
-    FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
-        InputAction,
-        ETriggerEvent::Completed,
-        [Pawn, PlayerController, this](const FInputActionValue& InputActionValue)
-        {
-            OnCompleted(Pawn, PlayerController, InputActionValue);
-        });
-
-    return InputActionBinding.GetHandle();
-}
-
 void UInputConfigBase::BindInputActions(UEnhancedInputComponent* EnhancedInputComponent, ETriggerEvent TriggerEvent,
-    TFunction<void(UEnhancedInputComponent*, const FInputActionInstance&)> EventFunction,
-    TArray<uint32>& InputBindingHandles) const
+    const FInputActionDelegate& InputActionDelegate, TArray<uint32>& InputBindingHandles) const
 {
-    if (bool bCanBind = EnhancedInputComponent && TriggerEvent != ETriggerEvent::None; !bCanBind) return;
-
-    for (auto InputAction : GetInputActions())
+    for (auto LocalInputAction : GetInputActions())
     {
         auto& InputActionBinding = EnhancedInputComponent->BindActionInstanceLambda(
-            InputAction,
+            LocalInputAction,
             TriggerEvent,
-            [EnhancedInputComponent, EventFunction](const FInputActionInstance& ActionInstance)
+            [EnhancedInputComponent, InputActionDelegate](const FInputActionInstance& ActionInstance)
             {
-                EventFunction(EnhancedInputComponent, ActionInstance);
+                InputActionDelegate.Execute(EnhancedInputComponent, ActionInstance);
             });
 
         InputBindingHandles.Emplace(InputActionBinding.GetHandle());
     }
 }
 
-void UInputConfigBase::OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnTriggered_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        AActor* Instigator = Pawn;
-        if (!Instigator) Instigator = PlayerController;
-        LOG(Log, TEXT("%s triggered by %s"), *InputAction->GetName(), *Instigator->GetName())
+        LOG(Log, TEXT("%s triggered by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
     }
 }
 
-void UInputConfigBase::OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnStarted_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        AActor* Instigator = Pawn;
-        if (!Instigator) Instigator = PlayerController;
-        LOG(Log, TEXT("%s started by %s"), *InputAction->GetName(), *Instigator->GetName())
+        LOG(Log, TEXT("%s started by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
     }
 }
 
-void UInputConfigBase::OnOngoing_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnOngoing_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        AActor* Instigator = Pawn;
-        if (!Instigator) Instigator = PlayerController;
-        LOG(Log, TEXT("%s ongoing by %s"), *InputAction->GetName(), *Instigator->GetName())
+        LOG(Log, TEXT("%s ongoing by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
     }
 }
 
-void UInputConfigBase::OnCanceled_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnCanceled_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        AActor* Instigator = Pawn;
-        if (!Instigator) Instigator = PlayerController;
-        LOG(Log, TEXT("%s canceled by %s"), *InputAction->GetName(), *Instigator->GetName())
+        LOG(Log, TEXT("%s canceled by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
     }
 }
 
-void UInputConfigBase::OnCompleted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnCompleted_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        AActor* Instigator = Pawn;
-        if (!Instigator) Instigator = PlayerController;
-        LOG(Log, TEXT("%s completed by %s"), *InputAction->GetName(), *Instigator->GetName())
+        LOG(Log, TEXT("%s completed by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
     }
 }
 

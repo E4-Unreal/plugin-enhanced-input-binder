@@ -20,14 +20,13 @@ class ENHANCEDINPUTBINDER_API UInputConfigBase : public UPrimaryDataAsset
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    TObjectPtr<UInputAction> InputAction;
+    using FInputActionDelegate = TDelegate<void(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)>;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
     TSet<ETriggerEvent> TriggerEvents;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    bool bEnableLog;
+    bool bEnableLog = false;
 
 public:
     UInputConfigBase();
@@ -36,6 +35,30 @@ public:
     void UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
 
 protected:
+    virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
+    virtual void OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
+
+    void BindInputActions(UEnhancedInputComponent* EnhancedInputComponent, ETriggerEvent TriggerEvent, const FInputActionDelegate& InputActionDelegate, TArray<uint32>& InputBindingHandles) const;
+
+    /* Event */
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnTriggered(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnStarted(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnOngoing(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnCanceled(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnCompleted(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance);
+
+    /* Query */
+
     UFUNCTION(BlueprintCallable)
     static APlayerController* GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
 
@@ -47,29 +70,5 @@ protected:
 
     virtual TArray<UInputAction*> GetInputActions() const { return TArray<UInputAction*>(); }
 
-    virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
-    virtual void OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
-
-    uint32 BindTriggeredEvent(UEnhancedInputComponent* EnhancedInputComponent);
-    uint32 BindStartedEvent(UEnhancedInputComponent* EnhancedInputComponent);
-    uint32 BindOngoingEvent(UEnhancedInputComponent* EnhancedInputComponent);
-    uint32 BindCanceledEvent(UEnhancedInputComponent* EnhancedInputComponent);
-    uint32 BindCompletedEvent(UEnhancedInputComponent* EnhancedInputComponent);
-
-    void BindInputActions(UEnhancedInputComponent* EnhancedInputComponent, ETriggerEvent TriggerEvent, TFunction<void(UEnhancedInputComponent*, const FInputActionInstance&)> EventFunction, TArray<uint32>& InputBindingHandles) const;
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnTriggered(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue);
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnStarted(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue);
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnOngoing(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue);
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnCanceled(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue);
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnCompleted(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue);
+    virtual bool IsValid() const { return !GetInputActions().IsEmpty() && !TriggerEvents.IsEmpty(); }
 };
