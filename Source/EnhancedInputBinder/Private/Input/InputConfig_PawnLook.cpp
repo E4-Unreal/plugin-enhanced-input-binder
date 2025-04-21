@@ -6,12 +6,11 @@
 #include "InputAction.h"
 #include "Interfaces/PawnLookInterface.h"
 
-void UInputConfig_PawnLook::OnTriggered_Implementation(UEnhancedInputComponent* EnhancedInputComponent,
-    const FInputActionInstance& InputActionInstance)
+void UInputConfig_PawnLook::OnTriggered_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance)
 {
-    Super::OnTriggered_Implementation(EnhancedInputComponent, InputActionInstance);
+    Super::OnTriggered_Implementation(PlayerController, InputActionInstance);
 
-    auto Pawn = GetPawn(EnhancedInputComponent);
+    auto Pawn = PlayerController->GetPawn();
     if (!Pawn) return;
 
     if (Pawn->Implements<UPawnLookInterface>())

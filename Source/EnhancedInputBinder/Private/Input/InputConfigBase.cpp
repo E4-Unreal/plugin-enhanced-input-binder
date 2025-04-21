@@ -62,78 +62,57 @@ void UInputConfigBase::OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedIn
 void UInputConfigBase::BindInputActions(UEnhancedInputComponent* EnhancedInputComponent, ETriggerEvent TriggerEvent,
     const FInputActionDelegate& InputActionDelegate, TArray<uint32>& InputBindingHandles) const
 {
+    auto PlayerController = UEnhancedInputBinderFunctionLibrary::GetPlayerController(EnhancedInputComponent->GetOwner());
     for (auto LocalInputAction : GetInputActions())
     {
         auto& InputActionBinding = EnhancedInputComponent->BindActionInstanceLambda(
             LocalInputAction,
             TriggerEvent,
-            [EnhancedInputComponent, InputActionDelegate](const FInputActionInstance& ActionInstance)
+            [PlayerController, InputActionDelegate](const FInputActionInstance& ActionInstance)
             {
-                InputActionDelegate.Execute(EnhancedInputComponent, ActionInstance);
+                InputActionDelegate.Execute(PlayerController, ActionInstance);
             });
 
         InputBindingHandles.Emplace(InputActionBinding.GetHandle());
     }
 }
 
-void UInputConfigBase::OnTriggered_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
+void UInputConfigBase::OnTriggered_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        LOG(Log, TEXT("%s triggered by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
+        LOG(Log, TEXT("%s triggered by %s"), *InputActionInstance.GetSourceAction()->GetName(), *PlayerController->GetName())
     }
 }
 
-void UInputConfigBase::OnStarted_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
+void UInputConfigBase::OnStarted_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        LOG(Log, TEXT("%s started by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
+        LOG(Log, TEXT("%s started by %s"), *InputActionInstance.GetSourceAction()->GetName(), *PlayerController->GetName())
     }
 }
 
-void UInputConfigBase::OnOngoing_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
+void UInputConfigBase::OnOngoing_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        LOG(Log, TEXT("%s ongoing by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
+        LOG(Log, TEXT("%s ongoing by %s"), *InputActionInstance.GetSourceAction()->GetName(), *PlayerController->GetName())
     }
 }
 
-void UInputConfigBase::OnCanceled_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
+void UInputConfigBase::OnCanceled_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        LOG(Log, TEXT("%s canceled by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
+        LOG(Log, TEXT("%s canceled by %s"), *InputActionInstance.GetSourceAction()->GetName(), *PlayerController->GetName())
     }
 }
 
-void UInputConfigBase::OnCompleted_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance)
+void UInputConfigBase::OnCompleted_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance)
 {
     if (bEnableLog)
     {
-        LOG(Log, TEXT("%s completed by %s"), *InputActionInstance.GetSourceAction()->GetName(), *GetPlayerController(EnhancedInputComponent)->GetName())
+        LOG(Log, TEXT("%s completed by %s"), *InputActionInstance.GetSourceAction()->GetName(), *PlayerController->GetName())
     }
-}
-
-APlayerController* UInputConfigBase::GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    if (!EnhancedInputComponent) return nullptr;
-
-    return UEnhancedInputBinderFunctionLibrary::GetPlayerController(EnhancedInputComponent->GetOwner());
-}
-
-APawn* UInputConfigBase::GetPawn(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    if (!EnhancedInputComponent) return nullptr;
-
-    return UEnhancedInputBinderFunctionLibrary::GetPawn(EnhancedInputComponent->GetOwner());
-}
-
-UEnhancedInputLocalPlayerSubsystem* UInputConfigBase::GetEnhancedInputLocalPlayerSubsystem(
-    UEnhancedInputComponent* EnhancedInputComponent)
-{
-    if (!EnhancedInputComponent) return nullptr;
-
-    return UEnhancedInputBinderFunctionLibrary::GetEnhancedInputLocalPlayerSubsystem(EnhancedInputComponent->GetOwner());
 }

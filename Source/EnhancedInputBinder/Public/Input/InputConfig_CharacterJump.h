@@ -15,6 +15,6 @@ class ENHANCEDINPUTBINDER_API UInputConfig_CharacterJump : public UInputConfig_P
     GENERATED_BODY()
 
 protected:
-    virtual void OnStarted_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance) override;
-    virtual void OnCompleted_Implementation(UEnhancedInputComponent* EnhancedInputComponent, const FInputActionInstance& InputActionInstance) override;
+    virtual void OnStarted_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance) override;
+    virtual void OnCompleted_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance) override;
 };
