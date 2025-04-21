@@ -60,10 +60,10 @@ protected:
     void OnCompleted(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue);
 
     UFUNCTION(BlueprintCallable)
-    static APawn* GetOwningPawn(UEnhancedInputComponent* EnhancedInputComponent);
+    static APlayerController* GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
 
     UFUNCTION(BlueprintCallable)
-    static APlayerController* GetOwningPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
+    static APawn* GetPawn(UEnhancedInputComponent* EnhancedInputComponent);
 
     UFUNCTION(BlueprintCallable)
     static UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputLocalPlayerSubsystem(UEnhancedInputComponent* EnhancedInputComponent);

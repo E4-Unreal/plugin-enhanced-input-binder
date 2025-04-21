@@ -60,8 +60,8 @@ void UInputConfigBase::OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedIn
 
 uint32 UInputConfigBase::BindTriggeredEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    auto Pawn = GetOwningPawn(EnhancedInputComponent);
-    auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
+    auto Pawn = GetPawn(EnhancedInputComponent);
+    auto PlayerController = GetPlayerController(EnhancedInputComponent);
 
     FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
         InputAction,
@@ -76,8 +76,8 @@ uint32 UInputConfigBase::BindTriggeredEvent(UEnhancedInputComponent* EnhancedInp
 
 uint32 UInputConfigBase::BindStartedEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    auto Pawn = GetOwningPawn(EnhancedInputComponent);
-    auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
+    auto Pawn = GetPawn(EnhancedInputComponent);
+    auto PlayerController = GetPlayerController(EnhancedInputComponent);
 
     FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
         InputAction,
@@ -92,8 +92,8 @@ uint32 UInputConfigBase::BindStartedEvent(UEnhancedInputComponent* EnhancedInput
 
 uint32 UInputConfigBase::BindOngoingEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    auto Pawn = GetOwningPawn(EnhancedInputComponent);
-    auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
+    auto Pawn = GetPawn(EnhancedInputComponent);
+    auto PlayerController = GetPlayerController(EnhancedInputComponent);
 
     FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
         InputAction,
@@ -108,8 +108,8 @@ uint32 UInputConfigBase::BindOngoingEvent(UEnhancedInputComponent* EnhancedInput
 
 uint32 UInputConfigBase::BindCanceledEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    auto Pawn = GetOwningPawn(EnhancedInputComponent);
-    auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
+    auto Pawn = GetPawn(EnhancedInputComponent);
+    auto PlayerController = GetPlayerController(EnhancedInputComponent);
 
     FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
         InputAction,
@@ -124,8 +124,8 @@ uint32 UInputConfigBase::BindCanceledEvent(UEnhancedInputComponent* EnhancedInpu
 
 uint32 UInputConfigBase::BindCompletedEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    auto Pawn = GetOwningPawn(EnhancedInputComponent);
-    auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
+    auto Pawn = GetPawn(EnhancedInputComponent);
+    auto PlayerController = GetPlayerController(EnhancedInputComponent);
 
     FEnhancedInputActionEventBinding& InputActionBinding = EnhancedInputComponent->BindActionValueLambda(
         InputAction,
@@ -188,21 +188,21 @@ void UInputConfigBase::OnCompleted_Implementation(APawn* Pawn, APlayerController
     }
 }
 
-APawn* UInputConfigBase::GetOwningPawn(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    return Cast<APawn>(EnhancedInputComponent->GetOwner());
-}
-
-APlayerController* UInputConfigBase::GetOwningPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
+APlayerController* UInputConfigBase::GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
 {
     APlayerController* OwningPlayerController = Cast<APlayerController>(EnhancedInputComponent->GetOwner());
-    if (OwningPlayerController) Cast<APlayerController>(GetOwningPawn(EnhancedInputComponent)->GetController());
+    if (!OwningPlayerController) OwningPlayerController = Cast<APlayerController>(Cast<APawn>(EnhancedInputComponent->GetOwner())->GetController());
 
     return OwningPlayerController;
+}
+
+APawn* UInputConfigBase::GetPawn(UEnhancedInputComponent* EnhancedInputComponent)
+{
+    return GetPlayerController(EnhancedInputComponent)->GetPawn();
 }
 
 UEnhancedInputLocalPlayerSubsystem* UInputConfigBase::GetEnhancedInputLocalPlayerSubsystem(
     UEnhancedInputComponent* EnhancedInputComponent)
 {
-    return ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetOwningPlayerController(EnhancedInputComponent)->GetLocalPlayer());
+    return ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetPlayerController(EnhancedInputComponent)->GetLocalPlayer());
 }
