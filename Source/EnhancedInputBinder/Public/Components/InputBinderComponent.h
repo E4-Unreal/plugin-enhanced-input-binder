@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "InputBinderComponent.generated.h"
 
+class UInputConfigSetting;
 class UInputMappingContext;
 class UInputConfigBase;
 class UEnhancedInputComponent;
@@ -23,6 +24,9 @@ protected:
     int32 Priority;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    TSet<TObjectPtr<UInputConfigSetting>> InputConfigSettings;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
     TSet<TObjectPtr<UInputMappingContext>> InputMappingContexts;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
@@ -36,7 +40,7 @@ protected:
 
 public:
     virtual void BeginPlay() override;
-    
+
     virtual void BindEnhancedInput();
     virtual void UnBindEnhancedInput();
 
