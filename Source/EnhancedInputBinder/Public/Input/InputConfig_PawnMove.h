@@ -15,7 +15,7 @@ class ENHANCEDINPUTBINDER_API UInputConfig_PawnMove : public UInputConfig
     GENERATED_BODY()
 
 protected:
-    virtual void OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue) override;
+    virtual void OnTriggered_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance) override;
 
     virtual void Move(APawn* Pawn, const FInputActionValue& ActionValue);
 };

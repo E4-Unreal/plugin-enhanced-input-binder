@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Input/InputConfig.h"
+#include "InputConfig.h"
 #include "InputConfig_PressAndRelease.generated.h"
 
 /**

@@ -15,7 +15,7 @@ class ENHANCEDINPUTBINDER_API UInputConfig_PawnLook : public UInputConfig
     GENERATED_BODY()
 
 protected:
-    virtual void OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue) override;
+    virtual void OnTriggered_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance) override;
 
     virtual void Look(APawn* Pawn, const FInputActionValue& ActionValue);
 };
