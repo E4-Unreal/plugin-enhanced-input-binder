@@ -23,7 +23,7 @@ class ENHANCEDINPUTBINDER_API UInputBinderComponent : public UActorComponent
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    TSet<TObjectPtr<UInputConfigSetting>> InputConfigSettings;
+    TArray<TObjectPtr<UInputConfigSetting>> InputConfigSettings;
 
     UPROPERTY(VisibleAnywhere, Transient, Category = "State")
     TMap<TObjectPtr<UInputConfigBase>, FInputBindingHandleList> InputBindingHandleMap;

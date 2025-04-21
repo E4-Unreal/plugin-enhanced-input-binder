@@ -25,10 +25,10 @@ protected:
     TObjectPtr<UInputMappingContext> InputMappingContext;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    TSet<TObjectPtr<UInputConfigBase>> InputConfigs;
+    TArray<TObjectPtr<UInputConfigBase>> InputConfigs;
 
 public:
     FORCEINLINE int32 GetPriority() const { return Priority; }
     FORCEINLINE UInputMappingContext* GetInputMappingContext() const { return InputMappingContext.Get(); }
-    FORCEINLINE const TSet<TObjectPtr<UInputConfigBase>>& GetInputConfigs() const { return InputConfigs; }
+    FORCEINLINE const TArray<TObjectPtr<UInputConfigBase>>& GetInputConfigs() const { return InputConfigs; }
 };
