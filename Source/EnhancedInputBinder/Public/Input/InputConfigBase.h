@@ -9,6 +9,7 @@
 
 class UInputAction;
 class UEnhancedInputLocalPlayerSubsystem;
+struct FInputActionInstance;
 
 /**
  * 입력 바인딩 전용 데이터 에셋
@@ -35,6 +36,17 @@ public:
     void UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
 
 protected:
+    UFUNCTION(BlueprintCallable)
+    static APlayerController* GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
+
+    UFUNCTION(BlueprintCallable)
+    static APawn* GetPawn(UEnhancedInputComponent* EnhancedInputComponent);
+
+    UFUNCTION(BlueprintCallable)
+    static UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputLocalPlayerSubsystem(UEnhancedInputComponent* EnhancedInputComponent);
+
+    virtual TArray<UInputAction*> GetInputActions() const { return TArray<UInputAction*>(); }
+
     virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
     virtual void OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
 
@@ -43,6 +55,8 @@ protected:
     uint32 BindOngoingEvent(UEnhancedInputComponent* EnhancedInputComponent);
     uint32 BindCanceledEvent(UEnhancedInputComponent* EnhancedInputComponent);
     uint32 BindCompletedEvent(UEnhancedInputComponent* EnhancedInputComponent);
+
+    void BindInputActions(UEnhancedInputComponent* EnhancedInputComponent, ETriggerEvent TriggerEvent, TFunction<void(UEnhancedInputComponent*, const FInputActionInstance&)> EventFunction, TArray<uint32>& InputBindingHandles) const;
 
     UFUNCTION(BlueprintNativeEvent)
     void OnTriggered(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue);
@@ -58,13 +72,4 @@ protected:
 
     UFUNCTION(BlueprintNativeEvent)
     void OnCompleted(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue);
-
-    UFUNCTION(BlueprintCallable)
-    static APlayerController* GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
-
-    UFUNCTION(BlueprintCallable)
-    static APawn* GetPawn(UEnhancedInputComponent* EnhancedInputComponent);
-
-    UFUNCTION(BlueprintCallable)
-    static UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputLocalPlayerSubsystem(UEnhancedInputComponent* EnhancedInputComponent);
 };

@@ -138,6 +138,26 @@ uint32 UInputConfigBase::BindCompletedEvent(UEnhancedInputComponent* EnhancedInp
     return InputActionBinding.GetHandle();
 }
 
+void UInputConfigBase::BindInputActions(UEnhancedInputComponent* EnhancedInputComponent, ETriggerEvent TriggerEvent,
+    TFunction<void(UEnhancedInputComponent*, const FInputActionInstance&)> EventFunction,
+    TArray<uint32>& InputBindingHandles) const
+{
+    if (bool bCanBind = EnhancedInputComponent && TriggerEvent != ETriggerEvent::None; !bCanBind) return;
+
+    for (auto InputAction : GetInputActions())
+    {
+        auto& InputActionBinding = EnhancedInputComponent->BindActionInstanceLambda(
+            InputAction,
+            TriggerEvent,
+            [EnhancedInputComponent, EventFunction](const FInputActionInstance& ActionInstance)
+            {
+                EventFunction(EnhancedInputComponent, ActionInstance);
+            });
+
+        InputBindingHandles.Emplace(InputActionBinding.GetHandle());
+    }
+}
+
 void UInputConfigBase::OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
     if (bEnableLog)
