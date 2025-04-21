@@ -98,17 +98,43 @@ void UInputBinderComponent::UnBindInputConfigSetting(UInputConfigSetting* InputC
 
 void UInputBinderComponent::BindEnhancedInput()
 {
-    for (auto InputConfigSetting : InputConfigSettings)
+    // Bind InputConfigSettings
+    for (const auto& InputConfigSetting : InputConfigSettings)
     {
         BindInputConfigSetting(InputConfigSetting);
+    }
+
+    // Add Additional InputMappingContexts
+    for (const auto& [InputMappingContext, Priority] : AdditionalInputMappingContexts)
+    {
+        AddInputMappingContext(InputMappingContext, Priority);
+    }
+
+    // Bind Additional InputConfigs
+    for (const auto& InputConfig : AdditionalInputConfigs)
+    {
+        BindInputConfig(InputConfig);
     }
 }
 
 void UInputBinderComponent::UnBindEnhancedInput()
 {
+    // UnBind InputConfigSettings
     for (auto InputConfigSetting : InputConfigSettings)
     {
         UnBindInputConfigSetting(InputConfigSetting);
+    }
+
+    // Remove Additional InputMappingContexts
+    for (const auto& [InputMappingContext, Priority] : AdditionalInputMappingContexts)
+    {
+        RemoveInputMappingContext(InputMappingContext);
+    }
+
+    // UnBind Additional InputConfigs
+    for (const auto& InputConfig : AdditionalInputConfigs)
+    {
+        UnBindInputConfig(InputConfig);
     }
 }
 
