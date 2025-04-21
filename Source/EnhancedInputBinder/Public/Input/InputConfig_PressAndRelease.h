@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Input/InputConfig.h"
+#include "Input/InputConfigBase.h"
 #include "InputConfig_PressAndRelease.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class ENHANCEDINPUTBINDER_API UInputConfig_PressAndRelease : public UInputConfig
+class ENHANCEDINPUTBINDER_API UInputConfig_PressAndRelease : public UInputConfigBase
 {
     GENERATED_BODY()
 

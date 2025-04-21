@@ -1,28 +1,28 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Input/InputConfig.h"
+#include "Input/InputConfigBase.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Logging.h"
 
-UInputConfig::UInputConfig()
+UInputConfigBase::UInputConfigBase()
 {
     TriggerEvents.Emplace(ETriggerEvent::Triggered);
 }
 
-TArray<uint32> UInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+TArray<uint32> UInputConfigBase::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
     return EnhancedInputComponent && InputAction ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
 }
 
-void UInputConfig::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+void UInputConfigBase::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (EnhancedInputComponent && InputAction) OnUnBindEnhancedInput(EnhancedInputComponent);
 }
 
-TArray<uint32> UInputConfig::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+TArray<uint32> UInputConfigBase::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
     TArray<uint32> InputBindingHandles;
 
@@ -53,12 +53,12 @@ TArray<uint32> UInputConfig::OnBindEnhancedInput(UEnhancedInputComponent* Enhanc
     return InputBindingHandles;
 }
 
-void UInputConfig::OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+void UInputConfigBase::OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
 
 }
 
-uint32 UInputConfig::BindTriggeredEvent(UEnhancedInputComponent* EnhancedInputComponent)
+uint32 UInputConfigBase::BindTriggeredEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
     auto Pawn = GetOwningPawn(EnhancedInputComponent);
     auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
@@ -74,7 +74,7 @@ uint32 UInputConfig::BindTriggeredEvent(UEnhancedInputComponent* EnhancedInputCo
     return InputActionBinding.GetHandle();
 }
 
-uint32 UInputConfig::BindStartedEvent(UEnhancedInputComponent* EnhancedInputComponent)
+uint32 UInputConfigBase::BindStartedEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
     auto Pawn = GetOwningPawn(EnhancedInputComponent);
     auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
@@ -90,7 +90,7 @@ uint32 UInputConfig::BindStartedEvent(UEnhancedInputComponent* EnhancedInputComp
     return InputActionBinding.GetHandle();
 }
 
-uint32 UInputConfig::BindOngoingEvent(UEnhancedInputComponent* EnhancedInputComponent)
+uint32 UInputConfigBase::BindOngoingEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
     auto Pawn = GetOwningPawn(EnhancedInputComponent);
     auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
@@ -106,7 +106,7 @@ uint32 UInputConfig::BindOngoingEvent(UEnhancedInputComponent* EnhancedInputComp
     return InputActionBinding.GetHandle();
 }
 
-uint32 UInputConfig::BindCanceledEvent(UEnhancedInputComponent* EnhancedInputComponent)
+uint32 UInputConfigBase::BindCanceledEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
     auto Pawn = GetOwningPawn(EnhancedInputComponent);
     auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
@@ -122,7 +122,7 @@ uint32 UInputConfig::BindCanceledEvent(UEnhancedInputComponent* EnhancedInputCom
     return InputActionBinding.GetHandle();
 }
 
-uint32 UInputConfig::BindCompletedEvent(UEnhancedInputComponent* EnhancedInputComponent)
+uint32 UInputConfigBase::BindCompletedEvent(UEnhancedInputComponent* EnhancedInputComponent)
 {
     auto Pawn = GetOwningPawn(EnhancedInputComponent);
     auto PlayerController = GetOwningPlayerController(EnhancedInputComponent);
@@ -138,7 +138,7 @@ uint32 UInputConfig::BindCompletedEvent(UEnhancedInputComponent* EnhancedInputCo
     return InputActionBinding.GetHandle();
 }
 
-void UInputConfig::OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnTriggered_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
     if (bEnableLog)
     {
@@ -148,7 +148,7 @@ void UInputConfig::OnTriggered_Implementation(APawn* Pawn, APlayerController* Pl
     }
 }
 
-void UInputConfig::OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnStarted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
     if (bEnableLog)
     {
@@ -158,7 +158,7 @@ void UInputConfig::OnStarted_Implementation(APawn* Pawn, APlayerController* Play
     }
 }
 
-void UInputConfig::OnOngoing_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnOngoing_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
     if (bEnableLog)
     {
@@ -168,7 +168,7 @@ void UInputConfig::OnOngoing_Implementation(APawn* Pawn, APlayerController* Play
     }
 }
 
-void UInputConfig::OnCanceled_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnCanceled_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
     if (bEnableLog)
     {
@@ -178,7 +178,7 @@ void UInputConfig::OnCanceled_Implementation(APawn* Pawn, APlayerController* Pla
     }
 }
 
-void UInputConfig::OnCompleted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
+void UInputConfigBase::OnCompleted_Implementation(APawn* Pawn, APlayerController* PlayerController, const FInputActionValue& InputActionValue)
 {
     if (bEnableLog)
     {
@@ -188,12 +188,12 @@ void UInputConfig::OnCompleted_Implementation(APawn* Pawn, APlayerController* Pl
     }
 }
 
-APawn* UInputConfig::GetOwningPawn(UEnhancedInputComponent* EnhancedInputComponent)
+APawn* UInputConfigBase::GetOwningPawn(UEnhancedInputComponent* EnhancedInputComponent)
 {
     return Cast<APawn>(EnhancedInputComponent->GetOwner());
 }
 
-APlayerController* UInputConfig::GetOwningPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
+APlayerController* UInputConfigBase::GetOwningPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
 {
     APlayerController* OwningPlayerController = Cast<APlayerController>(EnhancedInputComponent->GetOwner());
     if (OwningPlayerController) Cast<APlayerController>(GetOwningPawn(EnhancedInputComponent)->GetController());
@@ -201,7 +201,7 @@ APlayerController* UInputConfig::GetOwningPlayerController(UEnhancedInputCompone
     return OwningPlayerController;
 }
 
-UEnhancedInputLocalPlayerSubsystem* UInputConfig::GetEnhancedInputLocalPlayerSubsystem(
+UEnhancedInputLocalPlayerSubsystem* UInputConfigBase::GetEnhancedInputLocalPlayerSubsystem(
     UEnhancedInputComponent* EnhancedInputComponent)
 {
     return ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetOwningPlayerController(EnhancedInputComponent)->GetLocalPlayer());

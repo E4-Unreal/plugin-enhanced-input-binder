@@ -7,7 +7,7 @@
 #include "InputBinderComponent.generated.h"
 
 class UInputMappingContext;
-class UInputConfig;
+class UInputConfigBase;
 class UEnhancedInputComponent;
 class UEnhancedInputLocalPlayerSubsystem;
 
@@ -26,7 +26,7 @@ protected:
     TSet<TObjectPtr<UInputMappingContext>> InputMappingContexts;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    TSet<TObjectPtr<UInputConfig>> InputConfigs;
+    TSet<TObjectPtr<UInputConfigBase>> InputConfigs;
 
     UPROPERTY(VisibleAnywhere, Transient, Category = "State")
     TArray<uint32> InputBindingHandles;

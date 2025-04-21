@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputConfig.h"
+#include "InputConfigBase.h"
 #include "InputConfig_PawnMove.generated.h"
 
 /**
  *
  */
 UCLASS()
-class ENHANCEDINPUTBINDER_API UInputConfig_PawnMove : public UInputConfig
+class ENHANCEDINPUTBINDER_API UInputConfig_PawnMove : public UInputConfigBase
 {
     GENERATED_BODY()
 

@@ -6,7 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
-#include "Input/InputConfig.h"
+#include "Input/InputConfigBase.h"
 #include "Logging.h"
 
 void UInputBinderComponent::BeginPlay()

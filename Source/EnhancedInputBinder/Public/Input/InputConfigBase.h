@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "InputTriggers.h"
-#include "InputConfig.generated.h"
+#include "InputConfigBase.generated.h"
 
 class UInputAction;
 class UEnhancedInputLocalPlayerSubsystem;
@@ -14,7 +14,7 @@ class UEnhancedInputLocalPlayerSubsystem;
  * 입력 바인딩 전용 데이터 에셋
  */
 UCLASS(Abstract)
-class ENHANCEDINPUTBINDER_API UInputConfig : public UPrimaryDataAsset
+class ENHANCEDINPUTBINDER_API UInputConfigBase : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 
@@ -29,7 +29,7 @@ protected:
     bool bEnableLog;
 
 public:
-    UInputConfig();
+    UInputConfigBase();
 
     TArray<uint32> BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
     void UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
