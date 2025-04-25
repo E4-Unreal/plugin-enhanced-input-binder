@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
-	"Version": 2,
-	"VersionName": "0.2.0",
+	"Version": 3,
+	"VersionName": "0.2.1",
 	"FriendlyName": "Enhanced Input Binder",
 	"Description": "Dynamic input binding system for enhanced input",
 	"Category": "Input",
@@ -10,7 +10,7 @@
 	"DocsURL": "https://github.com/E4-Unreal/plugin-enhanced-input-binder/wiki",
 	"MarketplaceURL": "",
 	"SupportURL": "https://github.com/E4-Unreal/plugin-enhanced-input-binder",
-	"CanContainContent": false,
+	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": true,
 	"Installed": false,
