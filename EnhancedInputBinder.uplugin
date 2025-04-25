@@ -10,7 +10,7 @@
 	"DocsURL": "https://github.com/E4-Unreal/plugin-enhanced-input-binder/wiki",
 	"MarketplaceURL": "",
 	"SupportURL": "https://github.com/E4-Unreal/plugin-enhanced-input-binder",
-	"CanContainContent": false,
+	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": true,
 	"Installed": false,
